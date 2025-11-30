@@ -1,7 +1,7 @@
 import pygame;
 from circleshape import CircleShape;
 from shot import Shot;
-from constants import PLAYER_RADIUS, LINE_WIDTH, PLAYER_SPEED, PLAYER_TURN_SPEED, PLAYER_SHOOT_SPEED;
+from constants import *;
 
 
 
@@ -11,6 +11,7 @@ class Player(CircleShape):
         self.x = x;
         self.y = y;
         self.rotation = 0;
+        self.shot_cooldown = 0;
         super().__init__(self.x, self.y,PLAYER_RADIUS);
     
 
@@ -30,7 +31,10 @@ class Player(CircleShape):
         self.rotation += PLAYER_TURN_SPEED*dt;
 
     def update(self, dt):
-        keys = pygame.key.get_pressed()
+        
+        self.shot_cooldown -= dt;
+
+        keys = pygame.key.get_pressed();
 
         if keys[pygame.K_a]:
             self.rotate(dt*-1);
@@ -54,12 +58,17 @@ class Player(CircleShape):
         self.position += rotated_speed_with_vector;
 
     def shoot(self):
-        shot_instance = Shot(self.position.x, self.position.y);
-        #print(f"New shot at { shot_instance.position } based on PLayer X {self.x} and Player Y { self.y }");
-        shot_unit_vector = pygame.Vector2(0, 1);
-        shot_rotated_vector = shot_unit_vector.rotate(self.rotation);
-        shot_rotated_speed_with_vector = shot_rotated_vector * PLAYER_SHOOT_SPEED;
-        shot_instance.velocity = shot_rotated_speed_with_vector;
+        if self.shot_cooldown > 0:
+            pass;
+        else:
+            self.shot_cooldown = PLAYER_SHOOT_COOLDOWN_SECONDS;
+            shot_instance = Shot(self.position.x, self.position.y);
+            #print(f"New shot at { shot_instance.position } based on PLayer X {self.x} and Player Y { self.y }");
+            shot_unit_vector = pygame.Vector2(0, 1);
+            shot_rotated_vector = shot_unit_vector.rotate(self.rotation);
+            shot_rotated_speed_with_vector = shot_rotated_vector * PLAYER_SHOOT_SPEED;
+            shot_instance.velocity = shot_rotated_speed_with_vector;
+
 
 
         
