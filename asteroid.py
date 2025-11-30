@@ -2,17 +2,19 @@ from circleshape import CircleShape;
 from constants import LINE_WIDTH, ASTEROID_MIN_RADIUS;
 import pygame, random;
 from logger import log_event;
+from random import choice;
 
 class Asteroid(CircleShape):
     def __init__(self,x,y,radius):
         self.x = x;
         self.y = y;
         self.radius = radius;
+        self.color = random.choice(["salmon", "cyan", "yellow", "magenta", "bisque"]);
         super().__init__(self.x,self.y,self.radius);
         
 
     def draw(self,screen):
-        pygame.draw.circle(screen, "black", self.position, self.radius);
+        pygame.draw.circle(screen, self.color, self.position, self.radius);
     
     
     def update(self,dt):
